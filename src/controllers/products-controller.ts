@@ -6,11 +6,11 @@ import { z } from 'zod'
 export class ProductController {
     async index(request: Request, response: Response, next: NextFunction) {
         try {
-            const products = await knex('products').select(
-                'id',
-                'name',
-                'price',
-            )
+            const { name } = request.query
+
+            const products = await knex('products')
+                .select('id', 'name', 'price')
+                .whereLike('name', `%${name ?? ''}%`)
 
             const total = products.length
 
@@ -55,6 +55,28 @@ export class ProductController {
                 .select('name', 'price')
 
             response.json({ product })
+            return
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async update(request: Request, response: Response, next: NextFunction) {
+        try {
+            const id = z.string().uuid().trim().parse(request.params.id)
+
+            const requestBodySchema = z.object({
+                name: z.string().trim(),
+                price: z.number().gt(0),
+            })
+
+            const { name, price } = requestBodySchema.parse(request.body)
+
+            await knex('products')
+                .update({ name, price, updated_at: knex.fn.now() })
+                .where({ id })
+
+            response.json()
             return
         } catch (error) {
             next(error)
