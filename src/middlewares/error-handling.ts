@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { AppError } from '../utils/app-error'
+import { ZodError } from 'zod'
 
 export function errorHandling(
     error: any,
@@ -9,6 +10,14 @@ export function errorHandling(
 ) {
     if (error instanceof AppError) {
         response.status(error.statusCode).json({ message: error.message })
+        return
+    }
+
+    if (error instanceof ZodError) {
+        response
+            .status(400)
+            .json({ message: 'validation error', issue: error.format() })
+
         return
     }
 
