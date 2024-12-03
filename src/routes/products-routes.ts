@@ -8,5 +8,6 @@ productRoutes.get('/', productController.index)
 productRoutes.get('/:id', productController.listById)
 productRoutes.post('/', productController.create)
 productRoutes.put('/:id', productController.update)
+productRoutes.delete('/:id', productController.delete)
 
 export { productRoutes }
