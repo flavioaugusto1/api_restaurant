@@ -5,7 +5,7 @@ export default {
     },
     pool: {
         afterCreate: (connection: any, done: any) => {
-            connection.run('PRAGMA foreing_keys = ON')
+            connection.run('PRAGMA foreign_keys = ON', () => {})
             done()
         },
     },
@@ -16,6 +16,6 @@ export default {
     },
     seed: {
         extensions: 'ts',
-        direcdirectory: './src/database/seeds',
+        directory: './src/database/seeds',
     },
 }
