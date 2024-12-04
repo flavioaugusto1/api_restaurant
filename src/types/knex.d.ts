@@ -8,5 +8,16 @@ declare module 'knex/types/tables' {
             price: number
             updated_at: Date
         }
+        tables: {
+            id: string
+            table_number: number
+            updated_at: Date
+        }
+        tables_sessions: {
+            id: string
+            table_id: string
+            opened_at: Date
+            closed_at: Date
+        }
     }
 }
