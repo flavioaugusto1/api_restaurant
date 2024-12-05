@@ -19,5 +19,14 @@ declare module 'knex/types/tables' {
             opened_at: Date
             closed_at: Date
         }
+        orders: {
+            id: string
+            product_id: string
+            table_session_id: string
+            quantity: number
+            price: number
+            created_at: Date
+            updated_at: Date
+        }
     }
 }

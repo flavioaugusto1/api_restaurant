@@ -37,7 +37,70 @@ export class OrdersController {
                 throw new AppError('Product does not exists', 404)
             }
 
+            await knex('orders').insert({
+                id: crypto.randomUUID(),
+                product_id,
+                table_session_id,
+                price: product.price,
+                quantity,
+            })
+
             response.status(201).json()
+            return
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async index(request: Request, response: Response, next: NextFunction) {
+        try {
+            const table_session_id = z
+                .string()
+                .uuid()
+                .parse(request.params.table_session_id)
+
+            console.log(table_session_id)
+
+            const order = await knex('orders')
+                .select(
+                    'orders.id',
+                    'orders.table_session_id',
+                    'orders.product_id',
+                    'products.name',
+                    'orders.quantity',
+                    knex.raw('(orders.price * orders.quantity) AS total'),
+                    'orders.created_at',
+                    'orders.updated_at',
+                )
+                .join('products', 'products.id', 'orders.product_id')
+                .where({ table_session_id })
+                .orderBy('orders.created_at', 'desc')
+
+            response.json({ order })
+            return
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async show(request: Request, response: Response, next: NextFunction) {
+        try {
+            const table_session_id = z
+                .string()
+                .uuid()
+                .parse(request.params.table_session_id)
+
+            const order = await knex('orders')
+                .select(
+                    knex.raw(
+                        'COALESCE(SUM(orders.price * orders.quantity), 0) AS total',
+                    ),
+                    knex.raw('COALESCE((orders.quantity), 0) AS quantity'),
+                )
+                .where({ table_session_id })
+                .first()
+
+            response.json({ order })
             return
         } catch (error) {
             next(error)
