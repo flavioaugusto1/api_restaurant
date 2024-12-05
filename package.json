@@ -1,7 +1,7 @@
 {
     "name": "api_restaurant",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "server.ts",
     "scripts": {
         "dev": "tsx --watch src/server.js",
         "knex": "node --import tsx ./node_modules/knex/bin/cli.js"
