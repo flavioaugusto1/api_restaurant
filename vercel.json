@@ -1,8 +1,13 @@
 {
     "version": 2,
-    "functions": {
-        "src/**/*.ts": {
-            "runtime": "nodejs18.x"
+    "build": {
+        "src": "./src/server.ts",
+        "use": "@now/node"
+    },
+    "routes": [
+        {
+            "src": "(.*)",
+            "dest": "/src/server.ts"
         }
-    }
+    ]
 }
